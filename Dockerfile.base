@@ -18,10 +18,14 @@ RUN mkdir -p .klei/DoNotStarveTogether server_dst/mods
 RUN ./steamcmd.sh +quit
 
 RUN mkdir -p /home/dst/server_dst && \
-    ./steamcmd.sh \
-    +@ShutdownOnFailedCommand 1 \
-    +@NoPromptForPassword 1 \
-    +force_install_dir /home/dst/server_dst \
-    +login anonymous \
-    +app_update 343050 validate \
-    +quit
+    for i in 1 2 3 4 5; do \
+      echo "=== Attempt $i ===" && \
+      ./steamcmd.sh \
+        +@ShutdownOnFailedCommand 1 \
+        +@NoPromptForPassword 1 \
+        +@sSteamCmdForcePlatformType linux \
+        +force_install_dir /home/dst/server_dst \
+        +login anonymous \
+        +app_update 343050 validate \
+        +quit && break || sleep 5; \
+    done

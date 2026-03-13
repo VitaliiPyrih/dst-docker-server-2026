@@ -1,4 +1,6 @@
 services:
+
+  # ── BUILD ONLY ────────────────────────────────────────
   dst_base:
     build:
       context: .
@@ -7,33 +9,124 @@ services:
     profiles:
       - build
 
-  dst_caves:
-    container_name: dst_caves
-    build: .
-    ports:
-      - "10998:10998/udp"
-    networks:
-      - dst_cluster
-    links:
-      - dst_master
-    volumes:
-      - ./DSTClusterConfig:/home/dst/.klei/DoNotStarveTogether/DSTWhalesCluster
-    environment:
-      - SHARD_NAME=Caves
-
+  # ══════════════════════════════════════════════════════
+  # SERVER 1 — DSTWhalesCluster (профіль: server1)
+  # ══════════════════════════════════════════════════════
   dst_master:
     container_name: dst_master
     build: .
     networks:
-      - dst_cluster
+      - dst_cluster1
     ports:
       - "10999:10999/udp"
     volumes:
-      - ./DSTClusterConfig:/home/dst/.klei/DoNotStarveTogether/DSTWhalesCluster
+      - ./clusters/server1:/home/dst/.klei/DoNotStarveTogether
     environment:
+      - CLUSTER_NAME=DSTWhalesCluster
       - SHARD_NAME=Master
     stdin_open: true
     tty: true
+    profiles:
+      - server1
+      - all
+
+  dst_caves:
+    container_name: dst_caves
+    build: .
+    networks:
+      - dst_cluster1
+    links:
+      - dst_master
+    ports:
+      - "10998:10998/udp"
+    volumes:
+      - ./clusters/server1:/home/dst/.klei/DoNotStarveTogether
+    environment:
+      - CLUSTER_NAME=DSTWhalesCluster
+      - SHARD_NAME=Caves
+    profiles:
+      - server1
+      - all
+
+  # ══════════════════════════════════════════════════════
+  # SERVER 2 — DSTCluster2 (профіль: server2)
+  # ══════════════════════════════════════════════════════
+  dst_master2:
+    container_name: dst_master2
+    build: .
+    networks:
+      - dst_cluster2
+    ports:
+      - "11000:11000/udp"
+    volumes:
+      - ./clusters/server2:/home/dst/.klei/DoNotStarveTogether
+    environment:
+      - CLUSTER_NAME=DSTCluster2
+      - SHARD_NAME=Master
+    stdin_open: true
+    tty: true
+    profiles:
+      - server2
+      - all
+
+  dst_caves2:
+    container_name: dst_caves2
+    build: .
+    networks:
+      - dst_cluster2
+    links:
+      - dst_master2
+    ports:
+      - "10997:10997/udp"
+    volumes:
+      - ./clusters/server2:/home/dst/.klei/DoNotStarveTogether
+    environment:
+      - CLUSTER_NAME=DSTCluster2
+      - SHARD_NAME=Caves
+    profiles:
+      - server2
+      - all
+
+  # ══════════════════════════════════════════════════════
+  # SERVER 3 — DSTCluster3 (профіль: server3)
+  # ══════════════════════════════════════════════════════
+  dst_master3:
+    container_name: dst_master3
+    build: .
+    networks:
+      - dst_cluster3
+    ports:
+      - "11001:11001/udp"
+    volumes:
+      - ./clusters/server3:/home/dst/.klei/DoNotStarveTogether
+    environment:
+      - CLUSTER_NAME=DSTCluster3
+      - SHARD_NAME=Master
+    stdin_open: true
+    tty: true
+    profiles:
+      - server3
+      - all
+
+  dst_caves3:
+    container_name: dst_caves3
+    build: .
+    networks:
+      - dst_cluster3
+    links:
+      - dst_master3
+    ports:
+      - "10996:10996/udp"
+    volumes:
+      - ./clusters/server3:/home/dst/.klei/DoNotStarveTogether
+    environment:
+      - CLUSTER_NAME=DSTCluster3
+      - SHARD_NAME=Caves
+    profiles:
+      - server3
+      - all
 
 networks:
-  dst_cluster:
+  dst_cluster1:
+  dst_cluster2:
+  dst_cluster3:
