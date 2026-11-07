@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Якщо запущено від root: виправляємо права на backups і перемикаємось на dst
+if [ "$(id -u)" = "0" ]; then
+  mkdir -p /home/dst/backups
+  chown dst:dst /home/dst/backups
+  exec runuser -u dst -- env HOME=/home/dst "$0" "$@"
+fi
+
 CLUSTER_NAME="${CLUSTER_NAME:-DSTWhalesCluster}"
 SHARD_NAME="${SHARD_NAME:-Master}"
 UPDATE_ON_START="${UPDATE_ON_START:-true}"
