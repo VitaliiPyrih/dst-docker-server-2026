@@ -1,3 +1,8 @@
+x-dst-env: &dst-env
+  UPDATE_ON_START: ${UPDATE_ON_START:-false}
+  BACKUP_ENABLED: ${BACKUP_ENABLED:-true}
+  BACKUP_KEEP: ${BACKUP_KEEP:-7}
+
 services:
 
   # ── BUILD ONLY ────────────────────────────────────────
@@ -21,9 +26,11 @@ services:
       - "10999:10999/udp"
     volumes:
       - ./clusters/server1:/home/dst/.klei/DoNotStarveTogether
+      - ./backups/server1:/home/dst/backups
     environment:
-      - CLUSTER_NAME=DSTWhalesCluster
-      - SHARD_NAME=Master
+      <<: *dst-env
+      CLUSTER_NAME: DSTWhalesCluster
+      SHARD_NAME: Master
     stdin_open: true
     tty: true
     profiles:
@@ -42,8 +49,9 @@ services:
     volumes:
       - ./clusters/server1:/home/dst/.klei/DoNotStarveTogether
     environment:
-      - CLUSTER_NAME=DSTWhalesCluster
-      - SHARD_NAME=Caves
+      <<: *dst-env
+      CLUSTER_NAME: DSTWhalesCluster
+      SHARD_NAME: Caves
     profiles:
       - server1
       - all
@@ -60,9 +68,11 @@ services:
       - "11000:11000/udp"
     volumes:
       - ./clusters/server2:/home/dst/.klei/DoNotStarveTogether
+      - ./backups/server2:/home/dst/backups
     environment:
-      - CLUSTER_NAME=DSTCluster2
-      - SHARD_NAME=Master
+      <<: *dst-env
+      CLUSTER_NAME: DSTCluster2
+      SHARD_NAME: Master
     stdin_open: true
     tty: true
     profiles:
@@ -81,8 +91,9 @@ services:
     volumes:
       - ./clusters/server2:/home/dst/.klei/DoNotStarveTogether
     environment:
-      - CLUSTER_NAME=DSTCluster2
-      - SHARD_NAME=Caves
+      <<: *dst-env
+      CLUSTER_NAME: DSTCluster2
+      SHARD_NAME: Caves
     profiles:
       - server2
       - all
@@ -99,9 +110,11 @@ services:
       - "11001:11001/udp"
     volumes:
       - ./clusters/server3:/home/dst/.klei/DoNotStarveTogether
+      - ./backups/server3:/home/dst/backups
     environment:
-      - CLUSTER_NAME=DSTCluster3
-      - SHARD_NAME=Master
+      <<: *dst-env
+      CLUSTER_NAME: DSTCluster3
+      SHARD_NAME: Master
     stdin_open: true
     tty: true
     profiles:
@@ -120,8 +133,9 @@ services:
     volumes:
       - ./clusters/server3:/home/dst/.klei/DoNotStarveTogether
     environment:
-      - CLUSTER_NAME=DSTCluster3
-      - SHARD_NAME=Caves
+      <<: *dst-env
+      CLUSTER_NAME: DSTCluster3
+      SHARD_NAME: Caves
     profiles:
       - server3
       - all
